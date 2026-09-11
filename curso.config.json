@@ -1,0 +1,161 @@
+{
+  "_comentario": "Constantes institucionales de Mentes Brillantes. Este archivo se inyecta en TODOS los prompts como bloque cacheado. Cambiar un criterio aquí lo cambia en todo el pipeline: nunca hardcodear estos valores dentro de un prompt.",
+
+  "institucion": {
+    "nombre": "Club de Mentes Brillantes",
+    "nombre_corto": "Mentes Brillantes",
+    "cluster": "TALENTUM 360 — Clúster Educativo de Innovación, Empleabilidad y Emprendimiento Internacional",
+    "sitio_web": "www.clubmentesbrillantes.com.mx",
+    "facebook": "FB. Club de Mentes Brillantes",
+    "instagram": "IG. @mentesbrillantes_la",
+    "tagline": "Fortaleciendo el talento humano para un mundo en evolución"
+  },
+
+  "acreditacion": {
+    "_nota": "RESUELTO 2026-09-02: el manual se contradecía (Prompt 5 decía 80%/todos los módulos, el Formato Moodle decía 70% de los módulos). Se fija la versión del Prompt 5.",
+    "asistencia_minima_pct": 80,
+    "definicion_asistencia": "Se considera asistencia la sesión en la que el participante está físicamente presente (o conectado en programas virtuales) durante el 80% o más de la misma Y participando en las actividades interactivas.",
+    "calificacion_minima_modulo_pct": 80,
+    "modulos_a_aprobar": "todos",
+    "practicas_a_entregar": "todas",
+    "escala_modulo": ["A (Acreditado)", "N/A (No Acreditado)"],
+    "texto_requisitos": "Para acreditar el curso debes: (1) asistir al menos al 80% de las sesiones, (2) obtener 80% o más de respuestas correctas en la evaluación de cada módulo, (3) aprobar todos los módulos del programa y (4) entregar todas las prácticas."
+  },
+
+  "insignia": {
+    "plataforma": "Moodle Cloud / Mentes Brillantes",
+    "ruta_consulta": "Perfil → Insignias",
+    "vigencia_descarga_dias": 30,
+    "texto_insignia": "Al acreditar el curso recibirás tu insignia digital. Consúltala en la plataforma haciendo clic en Perfil / Insignias. Puedes descargarla y compartirla en LinkedIn u otras plataformas, o usar la URL de la insignia para darla de alta en tu perfil. Válida por 30 días a partir de la finalización del curso."
+  },
+
+  "pedagogia": {
+    "metodologias": ["Andragogía", "Constructivismo"],
+    "fases_por_tema": ["Introduccion", "Conceptos Basicos", "Conecta", "Practica", "Adopta"],
+    "definicion_fases": {
+      "Introduccion": "Capturar la atención. Generar curiosidad, establecer el propósito del tema y conectar con la motivación del estudiante. Es el gancho que prepara el terreno emocional.",
+      "Conceptos Basicos": "Entregar la información técnica, los conceptos y las teorías (el qué). Incluye conceptos, explicaciones teóricas, modelos, herramientas y técnicas.",
+      "Conecta": "Que el estudiante entienda por qué importa lo que aprende. Conectar el contenido con su realidad, sus problemas actuales y sus emociones. Generar empatía y sentido de utilidad (WIIFM).",
+      "Practica": "Aplicar los conocimientos en escenarios controlados, simulaciones o ejercicios. Momento de experimentar, cometer errores y recibir retroalimentación.",
+      "Adopta": "Llevar el aprendizaje a memoria de largo plazo. Reflexión sobre cómo, cuándo y dónde se aplicará. Incluye el Cierre WOW: final impactante que celebra el logro y motiva a la acción inmediata."
+    }
+  },
+
+  "limites_estructura": {
+    "modulos_max": 4,
+    "temas_por_modulo_max": 5,
+    "duracion_modulo_horas_default": 1,
+    "descanso_min_cada_horas": 1.5,
+    "descanso_duracion_min": 5,
+    "sesion_max_horas": 4
+  },
+
+  "rangos_palabras": {
+    "_nota": "ALINEADO AL PLAYBOOK v3.0 (2026-09-07). Sustituye a `minimos_palabras`. El playbook fija mínimos; aquí se añade techo porque solo con mínimo la generación se disparaba al doble (684 palabras contra un mínimo de 350 en v1.0). Validado por script: quedarse corto y pasarse cuentan igual como error.",
+    "_conceptos_basicos_resuelto": "El playbook v3 pide 'al menos 300 palabras' en Conceptos Básicos. La lectura visible se quiere en ~300. Se resuelve partiendo la sección: núcleo 250-300 (lo que se lee de corrido) + profundiza 150-250 (bloque colapsable). El total del bloque siempre supera las 300 del playbook y la lectura de primera pasada se queda en 300.",
+    "introduccion_modulo":  { "min": 250, "max": 350 },
+    "introduccion_tema":    { "min": 120, "max": 200 },
+    "conceptos_basicos":    { "min": 250, "max": 300, "_ref": "núcleo en prosa" },
+    "profundiza":           { "min": 150, "max": 250, "colapsable": true },
+    "conecta":              { "min": 150, "max": 200, "_ref": "playbook v3: al menos 150" },
+    "practica":             { "min": 150, "max": 250, "_ref": "playbook v3: al menos 150" },
+    "adopta":               { "min": 150, "max": 200, "_ref": "playbook v3: al menos 150" },
+    "cierre_modulo":        { "min": 200, "max": 260, "_ref": "playbook v3: al menos 200" }
+  },
+
+  "estructura_conceptos_basicos": {
+    "_nota": "Conceptos Básicos es la sección a la que el participante REGRESA. Se optimiza para consulta, no para lectura lineal.",
+    "nucleo_prosa_palabras": { "min": 250, "max": 300 },
+    "conceptos_clave_min": 6,
+    "conceptos_clave_max": 10,
+    "ejemplos_min": 2,
+    "ejemplos_max": 3,
+    "diagrama_obligatorio": true,
+    "profundiza_colapsable": true
+  },
+
+  "practica": {
+    "_ref": "Playbook v3, Prompt 3",
+    "preguntas_detonantes_min": 3,
+    "practicas_que_cuentan_para_evaluacion_final_por_modulo": 1,
+    "debe_documentarse_en_word": true,
+    "debe_entregarse_en_linea": true
+  },
+
+  "presentaciones": {
+    "_ref": "Playbook v3, Prompts 7 (sitio), 8 (virtual), 9 (asíncrona)",
+    "modalidades": {
+      "sitio":     { "prompt": 7, "practicas_por_tema": 1, "lleva_duracion": true,  "lleva_minuto_a_minuto": true },
+      "virtual":   { "prompt": 8, "practicas_por_tema": 2, "lleva_duracion": true,  "lleva_minuto_a_minuto": true },
+      "asincrona": { "prompt": 9, "practicas_por_tema": 2, "lleva_duracion": false, "lleva_minuto_a_minuto": false }
+    },
+    "bullets_por_slide_max": 5,
+    "expectativas_num_preguntas": 5,
+    "expectativas_duracion_min": 3,
+    "palabras_por_minuto_script": 150
+  },
+
+  "video": {
+    "_ref": "Playbook v3, Prompt 6",
+    "duracion_por_modulo_min": 15,
+    "incluye": ["carátula del curso", "introducción al módulo", "cierre de módulo"]
+  },
+
+  "recuperacion_activa": {
+    "_nota": "Añadido 2026-09-07. Intentar responder antes de leer mejora la retención más que ampliar la explicación.",
+    "preguntas_previas_por_tema": 2,
+    "momento": "antes de Conceptos Básicos",
+    "sin_calificacion": true,
+    "seguimiento_dias": 7,
+    "pregunta_seguimiento": "Una sola pregunta enviada por la plataforma a los 7 días del cierre, sobre la aplicación real de lo aprendido."
+  },
+
+  "evaluacion": {
+    "diagnostica_num_preguntas": 10,
+    "por_modulo_num_preguntas": 5,
+    "opciones_por_pregunta": 4,
+    "respuestas_correctas_por_pregunta": 1,
+    "incluye_explicacion_correcta": true,
+    "satisfaccion_preguntas_curso": 5,
+    "satisfaccion_preguntas_instructor": 5,
+    "satisfaccion_escala": "Likert 1-5"
+  },
+
+  "bibliografia": {
+    "_nota": "POLÍTICA FIJA: solo fuentes con licencia abierta, dominio público, estándares gratuitos, o material que Mentes Brillantes haya adquirido legalmente. Anna's Archive y equivalentes están PROHIBIDOS.",
+    "formato_cita": "APA 7",
+    "fuentes_permitidas": [
+      "OpenStax",
+      "Open Textbook Library",
+      "LibreTexts",
+      "DOAB (Directory of Open Access Books)",
+      "OER Commons / MERLOT",
+      "Project Gutenberg (dominio público)",
+      "Estándares y guías gratuitas de organismos (Scrum Guide, PMI, Kanban University, ONU Turismo, OCDE, Banco Mundial, INEGI, SECTUR, DATATUR, WTTC)",
+      "Papers de acceso abierto (arXiv, Semantic Scholar, DOAJ, SciELO)",
+      "Material adquirido con licencia por Mentes Brillantes"
+    ],
+    "fuentes_prohibidas": [
+      "Anna's Archive",
+      "Library Genesis / LibGen",
+      "Z-Library",
+      "Sci-Hub",
+      "Cualquier repositorio que distribuya obras con copyright sin licencia"
+    ],
+    "referencias_min": 8,
+    "referencias_max": 15
+  },
+
+  "herramientas_interaccion": ["Padlet", "Mentimeter", "Genially", "Canva", "Zoom"],
+
+  "modalidades": {
+    "sincrono": {
+      "requisitos": ["Formato Mentes Brillantes en PPT", "Plan de sesión minuto a minuto", "Zoom", "Herramientas de interacción virtual", "Máximo 4 horas de sesión", "Encuesta de satisfacción"]
+    },
+    "asincrono": {
+      "requisitos": ["Formato Moodle para la sesión", "Todo el material en Moodle", "Periodo de acceso definido", "Sesión de asesoría", "Uso de foros", "Encuesta de satisfacción"]
+    }
+  },
+
+  "bienvenida_plantilla": "Estimado(a) participante:\n\nNos complace darte la bienvenida a nuestro Curso {{NOMBRE_CURSO}}.\n\nA nombre de Mentes Brillantes, queremos expresarte el gusto que nos da recibirte y felicitarte por tu decisión de seguir avanzando en tu desarrollo profesional y personal."
+}

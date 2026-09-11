@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de Cursos · Mentes Brillantes</title>
+<style>
+  :root{
+    --crema:#F5F1E8; --navy:#1B2A4A; --gold:#C9A961; --rojo:#E63329;
+    --terra:#D95E2B; --teal:#2E6E5E; --gris:#6b7280; --linea:#e3ddd0;
+    --ok:#2E6E5E; --warn:#B8860B; --err:#C0392B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--crema);color:var(--navy);
+       font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:var(--navy);color:#fff;padding:14px 24px;display:flex;
+         align-items:center;justify-content:space-between;gap:16px}
+  header h1{font-size:16px;margin:0;letter-spacing:.4px;font-weight:700}
+  header .sub{font-size:12px;opacity:.7}
+  main{max-width:1180px;margin:0 auto;padding:24px}
+  .pasos{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .paso{flex:1;min-width:150px;padding:10px 14px;border-radius:8px;background:#fff;
+        border:1px solid var(--linea);font-size:13px;color:var(--gris)}
+  .paso.activo{border-color:var(--gold);background:#fffdf6;color:var(--navy);font-weight:600}
+  .paso.hecho{border-color:var(--ok);color:var(--ok)}
+  .paso b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;opacity:.65}
+  .card{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:22px;margin-bottom:18px}
+  .card h2{margin:0 0 4px;font-size:17px}
+  .card .hint{color:var(--gris);font-size:13px;margin:0 0 16px}
+  .drop{border:2px dashed var(--linea);border-radius:10px;padding:38px;text-align:center;
+        cursor:pointer;transition:.15s;background:#fcfaf5}
+  .drop:hover,.drop.over{border-color:var(--gold);background:#fffdf6}
+  .drop strong{display:block;font-size:15px;margin-bottom:4px}
+  .drop span{color:var(--gris);font-size:13px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.5px;
+        color:var(--gris);margin-bottom:5px;font-weight:600}
+  input[type=text],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--linea);
+        border-radius:7px;font:inherit;font-size:14px;background:#fff;color:var(--navy)}
+  textarea{min-height:88px;resize:vertical}
+  .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chk{display:flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid var(--linea);
+       border-radius:20px;cursor:pointer;font-size:13.5px;background:#fff;user-select:none}
+  .chk input{accent-color:var(--gold);margin:0}
+  .chk.on{border-color:var(--gold);background:#fffdf6}
+  button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 22px;
+         cursor:pointer;background:var(--navy);color:#fff}
+  button:hover{background:#2a3d64}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.sec{background:#fff;color:var(--navy);border:1px solid var(--linea)}
+  button.oro{background:var(--gold);color:var(--navy)}
+  .fila{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin-top:12px}
+  .stats b{display:block;font-size:19px;color:var(--navy)}
+  pre.prev{background:#fcfaf5;border:1px solid var(--linea);border-radius:8px;padding:12px;
+           max-height:180px;overflow:auto;font-size:11.5px;white-space:pre-wrap;margin:12px 0 0}
+  .log{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:#fcfaf5;
+       border:1px solid var(--linea);border-radius:8px;padding:12px;max-height:340px;overflow:auto}
+  .log div{padding:2px 0;display:flex;gap:10px}
+  .log .et{color:var(--gold);min-width:88px;font-weight:600}
+  .badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11.5px;font-weight:600}
+  .b-ok{background:#e6f2ee;color:var(--ok)} .b-warn{background:#fdf3dd;color:var(--warn)}
+  .b-err{background:#fbeae8;color:var(--err)} .b-gris{background:#eee;color:var(--gris)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--linea);
+        margin-bottom:16px;padding-bottom:10px}
+  .tab{padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13.5px;border:1px solid transparent}
+  .tab:hover{background:#fcfaf5}
+  .tab.on{background:var(--navy);color:#fff}
+  .sec-rev{border-left:3px solid var(--linea);padding:2px 0 2px 14px;margin-bottom:18px}
+  .sec-rev h4{margin:0 0 3px;font-size:13.5px}
+  .sec-rev .meta{font-size:11.5px;color:var(--gris);margin-bottom:7px}
+  .sec-rev.mal{border-left-color:var(--err)}
+  .sec-rev.ojo{border-left-color:var(--warn)}
+  .sec-rev.bien{border-left-color:var(--ok)}
+  .hallazgo{font-size:12.5px;padding:7px 11px;border-radius:6px;margin:5px 0;background:#fcfaf5;
+            border-left:3px solid var(--linea)}
+  .hallazgo.error{border-left-color:var(--err);background:#fdf1f0}
+  .hallazgo.aviso{border-left-color:var(--warn);background:#fefaf0}
+  .hallazgo code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:3px;font-size:11.5px}
+  .alerta{font-size:13px;padding:9px 12px;border-radius:6px;margin:6px 0;
+          background:#fefaf0;border-left:3px solid var(--gold)}
+  .vacio{color:var(--gris);font-size:13.5px;padding:26px;text-align:center}
+  .oculto{display:none}
+  .barra{height:5px;background:var(--linea);border-radius:3px;overflow:hidden;margin:14px 0}
+  .barra i{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
+  .aviso-caja{background:#fefaf0;border:1px solid var(--gold);border-radius:8px;
+              padding:12px 15px;font-size:13.5px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Generador de Cursos</h1>
+    <div class="sub">Club de Mentes Brillantes · uso interno</div>
+  </div>
+  <div class="sub" id="hdr-estado">—</div>
+</header>
+
+<main>
+  <div class="pasos">
+    <div class="paso activo" id="p1"><b>Paso 1</b>Ficha técnica</div>
+    <div class="paso" id="p2"><b>Paso 2</b>Qué generar</div>
+    <div class="paso" id="p3"><b>Paso 3</b>Generación</div>
+    <div class="paso" id="p4"><b>Paso 4</b>Revisión y descarga</div>
+  </div>
+
+  <!-- PASO 1 -->
+  <section class="card" id="c1">
+    <h2>Sube la ficha técnica del curso</h2>
+    <p class="hint">Acepta .docx, .pdf, .txt y .md. Se lee el texto y las tablas; nada sale de esta computadora salvo la llamada a la API.</p>
+    <div class="drop" id="drop">
+      <strong>Arrastra la ficha aquí o haz clic para elegirla</strong>
+      <span>Máximo 25 MB</span>
+      <input type="file" id="file" class="oculto" accept=".docx,.pdf,.txt,.md">
+    </div>
+    <div id="resumen-ficha" class="oculto">
+      <div class="stats">
+        <div><b id="s-pal">—</b>palabras</div>
+        <div><b id="s-car">—</b>caracteres</div>
+        <div><b id="s-tab">—</b>tablas</div>
+        <div><b id="s-arc">—</b>archivo</div>
+      </div>
+      <pre class="prev" id="s-prev"></pre>
+      <div class="fila"><button id="btn-a2">Continuar</button></div>
+    </div>
+  </section>
+
+  <!-- PASO 2 -->
+  <section class="card oculto" id="c2">
+    <h2>Qué quieres generar</h2>
+    <p class="hint">Los módulos, el marco, las evaluaciones y las presentaciones se generan en paralelo: agregar piezas casi no aumenta el tiempo total.</p>
+    <div id="sin-key" class="aviso-caja oculto">
+      No hay <code>ANTHROPIC_API_KEY</code> en el archivo <code>.env</code>. Agrégala y reinicia el servidor.
+    </div>
+    <div class="grid">
+      <div>
+        <label for="modelo">Modelo</label>
+        <select id="modelo"><option>Cargando…</option></select>
+      </div>
+      <div>
+        <label for="nombre-curso">Nombre del curso (opcional)</label>
+        <input type="text" id="nombre-curso" placeholder="Se toma de la ficha si lo dejas vacío">
+      </div>
+      <div>
+        <label for="fac-nombre">Facilitador (opcional)</label>
+        <input type="text" id="fac-nombre" placeholder="Nombre y apellido">
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <label for="fac-datos">Datos del facilitador</label>
+      <textarea id="fac-datos" placeholder="Experiencia, empresas, especialidad, hobbies. Si lo dejas vacío, esos campos salen como [POR DEFINIR]: no se inventan datos de personas reales."></textarea>
+    </div>
+    <div style="margin-top:16px">
+      <label>Piezas del curso</label>
+      <div class="checks" id="piezas">
+        <label class="chk on"><input type="checkbox" id="ck-modulos" checked disabled> Módulos (siempre)</label>
+        <label class="chk on"><input type="checkbox" id="ck-marco" checked> Marco del curso</label>
+        <label class="chk on"><input type="checkbox" id="ck-eval" checked> Evaluaciones</label>
+        <label class="chk"><input type="checkbox" id="ck-video"> Material para video</label>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <label>Presentaciones</label>
+      <div class="checks" id="modalidades"></div>
+    </div>
+    <div class="fila">
+      <button id="btn-generar">Generar curso</button>
+      <button class="sec" id="btn-v1">Cambiar ficha</button>
+    </div>
+  </section>
+
+  <!-- PASO 3 -->
+  <section class="card oculto" id="c3">
+    <h2>Generando</h2>
+    <p class="hint" id="c3-hint">Etapas secuenciales primero (ficha y syllabus), luego todo lo demás en paralelo.</p>
+    <div class="barra"><i id="barra"></i></div>
+    <div class="log" id="log"></div>
+  </section>
+
+  <!-- PASO 4 -->
+  <section class="card oculto" id="c4">
+    <h2>Revisión</h2>
+    <p class="hint">Cada sección se compara contra los rangos del config. Los errores bloquean; los avisos son criterio tuyo.</p>
+    <div class="stats" style="margin-bottom:16px">
+      <div><b id="r-mod">—</b>módulos</div>
+      <div><b id="r-err">—</b>errores</div>
+      <div><b id="r-avi">—</b>avisos</div>
+      <div><b id="r-ale">—</b>notas académicas</div>
+      <div><b id="r-lla">—</b>llamadas al modelo</div>
+      <div><b id="r-cache">—</b>tokens desde caché</div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div id="panel"></div>
+    <div class="fila">
+      <button class="oro" id="btn-zip">Descargar curso completo (.zip)</button>
+      <button class="sec" id="btn-nuevo">Generar otro curso</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+let TRABAJO = null, RESULTADO = null, TAB = null, MODALIDADES = [], RANGOS = {};
+
+function paso(n){
+  [1,2,3,4].forEach(i=>{
+    const el = $('#p'+i), card = $('#c'+i);
+    el.className = 'paso' + (i===n?' activo':(i<n?' hecho':''));
+    card.classList.toggle('oculto', i!==n);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ---------- estado inicial
+(async ()=>{
+  const e = await (await fetch('/api/estado')).json();
+  $('#hdr-estado').textContent = e.institucion || '';
+  MODALIDADES = e.modalidades || [];
+  RANGOS = e.rangos || {};
+  $('#modalidades').innerHTML = MODALIDADES.map(m=>
+    `<label class="chk"><input type="checkbox" class="mod" value="${m}"> ${m}</label>`).join('');
+  document.querySelectorAll('.chk input').forEach(i=>{
+    i.addEventListener('change', ev=> ev.target.closest('.chk').classList.toggle('on', ev.target.checked));
+  });
+  if(!e.api_key_configurada){ $('#sin-key').classList.remove('oculto'); $('#btn-generar').disabled = true; }
+  else cargarModelos(e.modelo_default);
+})();
+
+async function cargarModelos(def){
+  const sel = $('#modelo');
+  try{
+    const r = await (await fetch('/api/modelos')).json();
+    sel.innerHTML = r.modelos.map(m=>`<option value="${m.id}">${m.nombre}</option>`).join('');
+    if(def && r.modelos.some(m=>m.id===def)) sel.value = def;
+  }catch(err){
+    sel.innerHTML = `<option value="${def||''}">${def||'No se pudo listar; revisa la API key'}</option>`;
+  }
+}
+
+// ---------- paso 1
+const drop = $('#drop'), file = $('#file');
+drop.onclick = ()=> file.click();
+drop.ondragover = e=>{ e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = ()=> drop.classList.remove('over');
+drop.ondrop = e=>{ e.preventDefault(); drop.classList.remove('over');
+                   if(e.dataTransfer.files[0]) subir(e.dataTransfer.files[0]); };
+file.onchange = ()=> file.files[0] && subir(file.files[0]);
+
+async function subir(f){
+  drop.innerHTML = '<strong>Leyendo…</strong><span>'+f.name+'</span>';
+  const fd = new FormData(); fd.append('archivo', f);
+  const r = await fetch('/api/ficha', {method:'POST', body:fd});
+  if(!r.ok){
+    const e = await r.json();
+    drop.innerHTML = '<strong>No se pudo leer</strong><span>'+(e.detail||'')+'</span>';
+    return;
+  }
+  const d = await r.json();
+  TRABAJO = d.id;
+  $('#s-pal').textContent = d.palabras.toLocaleString('es-MX');
+  $('#s-car').textContent = d.caracteres.toLocaleString('es-MX');
+  $('#s-tab').textContent = d.tiene_tablas ? 'sí' : 'no';
+  $('#s-arc').textContent = d.archivo.length>22 ? d.archivo.slice(0,20)+'…' : d.archivo;
+  $('#s-prev').textContent = d.preview;
+  $('#resumen-ficha').classList.remove('oculto');
+  drop.innerHTML = '<strong>'+f.name+'</strong><span>Haz clic para cambiarla</span>';
+}
+
+$('#btn-a2').onclick = ()=> paso(2);
+$('#btn-v1').onclick = ()=> paso(1);
+
+// ---------- paso 3
+$('#btn-generar').onclick = async ()=>{
+  const opts = {
+    id: TRABAJO,
+    modelo: $('#modelo').value,
+    nombre_curso: $('#nombre-curso').value,
+    facilitador_nombre: $('#fac-nombre').value,
+    facilitador_datos: $('#fac-datos').value,
+    marco: $('#ck-marco').checked,
+    evaluaciones: $('#ck-eval').checked,
+    video: $('#ck-video').checked,
+    presentaciones: [...document.querySelectorAll('.mod:checked')].map(x=>x.value),
+  };
+  const r = await fetch('/api/generar', {method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify(opts)});
+  if(!r.ok){ alert((await r.json()).detail); return; }
+  $('#log').innerHTML = ''; $('#barra').style.width = '4%';
+  paso(3); sondear(0);
+};
+
+const ETIQUETAS = {generando:'generando', ok:'listo', reintentando:'reintenta',
+  ok_con_errores:'con avisos', error:'error', lanzando:'en paralelo'};
+
+async function sondear(desde){
+  const r = await (await fetch(`/api/trabajo/${TRABAJO}?desde=${desde}`)).json();
+  (r.eventos||[]).forEach(e=>{
+    const extra = e.errores ? ` (${e.errores} errores)` :
+                  e.avisos ? ` (${e.avisos} avisos)` :
+                  e.tareas ? ` (${e.tareas} tareas)` :
+                  e.detalle ? ` — ${e.detalle}` : '';
+    $('#log').insertAdjacentHTML('beforeend',
+      `<div><span class="et">${e.etapa}</span><span>${ETIQUETAS[e.estado]||e.estado}${extra}</span></div>`);
+  });
+  $('#log').scrollTop = 1e6;
+  const pct = Math.min(94, 8 + (r.total_eventos||0) * 5);
+  $('#barra').style.width = pct + '%';
+
+  if(r.estado === 'listo'){ $('#barra').style.width='100%'; RESULTADO = r.resultado; pintar(r.resumen); paso(4); return; }
+  if(r.estado === 'error'){ $('#c3-hint').innerHTML = `<span style="color:var(--err)">Falló: ${r.error}</span>`; return; }
+  setTimeout(()=> sondear(r.total_eventos), 1200);
+}
+
+// ---------- paso 4
+function pintar(res){
+  $('#r-mod').textContent = res.modulos;
+  $('#r-err').textContent = res.errores;
+  $('#r-avi').textContent = res.avisos;
+  $('#r-ale').textContent = res.alertas_academicas;
+  $('#r-lla').textContent = (res.uso||{}).llamadas ?? '—';
+  $('#r-cache').textContent = ((res.uso||{}).cache_read ?? 0).toLocaleString('es-MX');
+
+  const claves = ['ficha','syllabus'];
+  Object.keys(RESULTADO).filter(k=>k.startsWith('modulo_')).sort().forEach(k=>claves.push(k));
+  ['marco','evaluaciones'].forEach(k=> RESULTADO[k] && claves.push(k));
+  Object.keys(RESULTADO).filter(k=>k.startsWith('presentacion_')||k.startsWith('video_')).sort()
+    .forEach(k=>claves.push(k));
+
+  $('#tabs').innerHTML = claves.map(k=>{
+    const h = (RESULTADO.hallazgos||{})[k]||[];
+    const err = h.filter(x=>x.severidad==='error').length;
+    const avi = h.filter(x=>x.severidad==='aviso').length;
+    const b = err ? `<span class="badge b-err">${err}</span>`
+            : avi ? `<span class="badge b-warn">${avi}</span>`
+            : `<span class="badge b-ok">ok</span>`;
+    return `<div class="tab" data-k="${k}">${nombreTab(k)} ${b}</div>`;
+  }).join('');
+  document.querySelectorAll('.tab').forEach(t=> t.onclick = ()=> abrir(t.dataset.k));
+  abrir(claves[0]);
+}
+
+function nombreTab(k){
+  if(k==='ficha') return 'Ficha';
+  if(k==='syllabus') return 'Syllabus';
+  if(k==='marco') return 'Marco';
+  if(k==='evaluaciones') return 'Evaluaciones';
+  if(k.startsWith('modulo_')) return 'Módulo '+k.split('_')[1];
+  if(k.startsWith('video_')) return 'Video M'+k.split('_')[1];
+  if(k.startsWith('presentacion_')) return 'Pres. '+k.split('_')[1];
+  return k;
+}
+
+function palabras(t){ return (String(t||'').match(/[\wáéíóúñÁÉÍÓÚÑüÜ']+/g)||[]).length; }
+
+function filaSeccion(titulo, texto, rango){
+  const n = palabras(texto);
+  let cls='bien', nota='';
+  if(rango){
+    if(rango.min && n<rango.min){ cls='mal'; nota=`faltan ${rango.min-n}`; }
+    else if(rango.max && n>rango.max){ cls='ojo'; nota=`sobran ${n-rango.max}`; }
+    else nota='dentro del rango';
+  }
+  const lim = rango ? `${rango.min||0}–${rango.max||'∞'}` : '';
+  return `<div class="sec-rev ${cls}">
+    <h4>${titulo}</h4>
+    <div class="meta">${n} palabras ${lim?`· rango ${lim} · ${nota}`:''}</div>
+    <div style="font-size:13.5px;white-space:pre-wrap">${(String(texto||'')).slice(0,420)}${String(texto||'').length>420?'…':''}</div>
+  </div>`;
+}
+
+function abrir(k){
+  TAB = k;
+  document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('on', t.dataset.k===k));
+  const d = RESULTADO[k], h = (RESULTADO.hallazgos||{})[k]||[];
+  const alertas = (RESULTADO.alertas||{})[k]||d?.alertas||[];
+  let html = '';
+
+  if(h.length){
+    html += '<h3 style="font-size:14px;margin:0 0 8px">Verificaciones</h3>';
+    html += h.map(x=>`<div class="hallazgo ${x.severidad}">
+      <code>${x.ruta}</code> ${x.regla} — ${x.detalle}</div>`).join('');
+  }
+  if(alertas.length){
+    html += '<h3 style="font-size:14px;margin:18px 0 8px">Notas para el área académica</h3>';
+    html += alertas.map(a=>`<div class="alerta">${a}</div>`).join('');
+  }
+
+  if(k.startsWith('modulo_') && d){
+    html += '<h3 style="font-size:14px;margin:18px 0 8px">Contenido</h3>';
+    html += filaSeccion('Introducción del módulo', d.introduccion, RANGOS.introduccion_modulo);
+    (d.temas||[]).forEach(t=>{
+      html += `<h4 style="margin:16px 0 6px;color:var(--gold)">Tema ${t.numero}. ${t.nombre}</h4>`;
+      html += filaSeccion('Introducción', t.introduccion, RANGOS.introduccion_tema);
+      html += filaSeccion('Conceptos básicos · núcleo', t.conceptos_basicos?.nucleo, RANGOS.conceptos_basicos);
+      html += filaSeccion('Profundiza (colapsable)', t.conceptos_basicos?.profundiza, RANGOS.profundiza);
+      html += filaSeccion('Conecta', t.conecta?.texto, RANGOS.conecta);
+      html += filaSeccion('Practica · instrucciones', t.practica?.instrucciones, RANGOS.practica);
+      html += filaSeccion('Adopta', t.adopta?.texto, RANGOS.adopta);
+    });
+    html += filaSeccion('Cierre del módulo', d.cierre?.texto, RANGOS.cierre_modulo);
+  } else if(d){
+    html += '<h3 style="font-size:14px;margin:18px 0 8px">JSON generado</h3>';
+    html += `<pre class="prev" style="max-height:460px">${JSON.stringify(d,null,2)
+      .replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</pre>`;
+  } else {
+    html += '<div class="vacio">No se generó esta pieza.</div>';
+  }
+  $('#panel').innerHTML = html;
+}
+
+$('#btn-zip').onclick = ()=> window.location = `/api/descargar/${TRABAJO}`;
+$('#btn-nuevo').onclick = ()=> location.reload();
+</script>
+</body>
+</html>

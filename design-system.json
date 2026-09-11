@@ -1,0 +1,164 @@
+{
+  "_comentario": "Sistema de diseño de las presentaciones Mentes Brillantes, extraído del deck TU2.1.2 'Investigación de mercados, innovación y mejora de productos turísticos' (68 slides). Lo consume E6-presentacion. Los hex son aproximaciones leídas del PDF: confirmar contra la plantilla maestra de Canva antes de producción.",
+
+  "formato": {
+    "aspect_ratio": "16:9",
+    "resolucion_referencia": "1920x1080"
+  },
+
+  "paleta": {
+    "fondo_base": {
+      "hex": "#F5F1E8",
+      "uso": "Fondo de casi todas las slides. Crema / off-white cálido."
+    },
+    "patron_fondo": {
+      "descripcion": "Flechas y garabatos curvos en blanco, muy bajo contraste, ocupando toda la superficie. Marca de agua decorativa, nunca compite con el texto.",
+      "opacidad_aprox": 0.35
+    },
+    "azul_marino": {
+      "hex": "#1B2A4A",
+      "uso": "Títulos principales, texto de cuerpo, nombres de facilitador, iconos circulares. Es el color de lectura."
+    },
+    "dorado": {
+      "hex": "#C9A961",
+      "uso": "Títulos de sección en mayúsculas, bandas de encabezado, píldoras de bullets, caligrafía script, resaltados."
+    },
+    "rojo_acento": {
+      "hex": "#E63329",
+      "uso": "EXCLUSIVO para frases memorables y citas de cierre. Nunca para cuerpo de texto. Máximo una por slide."
+    },
+    "naranja_terracota": {
+      "hex": "#D95E2B",
+      "uso": "Proyecto Integrador (icono de cubos + engrane) y slides de receso."
+    },
+    "verde_teal": {
+      "hex": "#2E6E5E",
+      "uso": "Acento secundario en módulos de comportamiento/journey. Se usa por módulo, no mezclado."
+    },
+    "blanco": {
+      "hex": "#FFFFFF",
+      "uso": "Texto sobre carátulas de módulo con foto a sangre."
+    }
+  },
+
+  "tipografia": {
+    "titulo": {
+      "estilo": "Sans-serif bold, mayúsculas, tracking ligeramente cerrado",
+      "color_default": "dorado o azul_marino",
+      "notas": "Los títulos de sección van en dorado; los títulos de contenido dentro de slide van en azul_marino."
+    },
+    "script": {
+      "estilo": "Manuscrita cursiva",
+      "color": "dorado (o azul_marino cuando el nombre va en dorado)",
+      "uso": "SOLO para la segunda palabra de un par: 'Curso/Taller', 'Verónica/Sánchez', 'Félix/Carrillo'. Nunca para frases completas."
+    },
+    "cuerpo": {
+      "estilo": "Sans-serif regular",
+      "color": "azul_marino",
+      "jerarquia": "bullet nivel 1 con punto sólido, nivel 2 con círculo hueco"
+    },
+    "frase_memorable": {
+      "estilo": "Sans-serif bold o italic, entre comillas",
+      "color": "rojo_acento",
+      "posicion": "pie de slide, a veces sobre banda de color completo"
+    }
+  },
+
+  "chrome": {
+    "header_izq": {
+      "contenido": "Logo TALENTUM 360",
+      "posicion": "esquina superior izquierda",
+      "opacidad": "reducida (~0.5) en slides de contenido, plena en portada y receso"
+    },
+    "header_der": {
+      "contenido": "Logo CLUB DE MENTES BRILLANTES",
+      "posicion": "esquina superior derecha",
+      "variante": "versión blanca sobre carátulas de módulo con foto oscura"
+    },
+    "footer": {
+      "izq": "FB. Club de Mentes Brillantes",
+      "centro": "www.clubmentesbrillantes.com.mx",
+      "der": "IG. @mentesbrillantes_la",
+      "excepcion": "Se omite en slides de receso y en algunas carátulas a sangre"
+    }
+  },
+
+  "componentes": {
+    "banda_titulo": {
+      "descripcion": "Rectángulo dorado sangrado por la izquierda con el título en azul_marino encima. Es el encabezado más usado en slides de contenido de módulo.",
+      "ejemplos": ["EL NUEVO TURISTA", "IA Y TURISMO", "TENDENCIAS", "JOURNEY DE LA EXPERIENCIA DEL TURISTA"]
+    },
+    "pildora_bullet": {
+      "descripcion": "Círculo azul_marino con icono lineal dorado + cápsula dorada con título bold y descripción regular. Se apilan 4, escalonadas horizontalmente.",
+      "uso": "slides de facilitador"
+    },
+    "banda_sintesis": {
+      "descripcion": "Banda dorada a ancho completo con texto blanco bold. Cierra la slide con la síntesis del contenido.",
+      "uso": "audiencia, objetivo"
+    },
+    "banda_cita": {
+      "descripcion": "Banda roja a ancho completo con la frase memorable en blanco bold centrado.",
+      "uso": "cierre de tema o ejercicio"
+    },
+    "tarjeta_papel": {
+      "descripcion": "Rectángulo crema con borde dibujado a mano y cintas adhesivas doradas en las esquinas.",
+      "uso": "ejercicios"
+    },
+    "cuaderno": {
+      "descripcion": "Fotografía de un cuaderno abierto con el texto sobreimpreso rotado ligeramente.",
+      "uso": "proyecto integrador"
+    },
+    "diagrama_central": {
+      "descripcion": "Diagrama radial, de dona, o timeline horizontal, centrado o a la derecha, con etiquetas de colores saturados (azul cielo, ámbar, rosa, teal).",
+      "uso": "temas conceptuales (PESTEL, journey, aplicaciones de IA)"
+    },
+    "captura_fuente": {
+      "descripcion": "Screenshot del dashboard o portal fuente + código QR + URL en texto pequeño debajo.",
+      "uso": "temas con datos; siempre acompaña la URL de la fuente"
+    }
+  },
+
+  "taxonomia_slides": {
+    "_nota": "Enum cerrado. E6 solo puede emitir estos tipos. Cada uno tiene campos obligatorios distintos: ver el esquema en prompts/E6-presentacion.md.",
+    "apertura": [
+      "registro_asistencia",
+      "portada",
+      "facilitador",
+      "pregunta_provocadora",
+      "pros_contras",
+      "audiencia",
+      "objetivo_curso",
+      "proyecto_integrador_intro",
+      "proyecto_integrador_uso",
+      "expectativas",
+      "agenda",
+      "materiales_recursos"
+    ],
+    "modulo": [
+      "caratula_modulo",
+      "objetivo_modulo",
+      "tema_conceptos",
+      "tema_diagrama",
+      "tema_conexion",
+      "ejercicio",
+      "receso",
+      "cierre_modulo"
+    ],
+    "cierre": [
+      "reflexion",
+      "proyecto_estructura",
+      "cierre_wow",
+      "evaluaciones",
+      "gracias"
+    ]
+  },
+
+  "reglas": [
+    "Una sola frase en rojo_acento por slide, como máximo.",
+    "El script cursivo solo se usa en pares nombre/apellido o Curso/Taller.",
+    "Toda slide con datos externos lleva la URL de la fuente visible en texto pequeño.",
+    "Las carátulas de módulo alternan entre foto a sangre y fondo de color liso, para dar ritmo visual.",
+    "Los ejercicios siempre incluyen una pregunta guía destacada y una frase de cierre.",
+    "El receso es una slide completa con contador grande sobre fondo crema cálido."
+  ]
+}
