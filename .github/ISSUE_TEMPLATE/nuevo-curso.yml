@@ -1,0 +1,79 @@
+name: Solicitar un curso
+description: Genera el syllabus, los módulos, el marco y las evaluaciones a partir de una ficha técnica.
+title: "Curso: "
+labels: ["curso"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Al enviar esta solicitud se dispara la generación. Tarda entre 5 y 15 minutos
+        según cuántos módulos tenga el curso. Cuando termine, un comentario en esta
+        misma issue te avisa y te deja el enlace a los documentos.
+
+  - type: textarea
+    id: ficha
+    attributes:
+      label: Ficha técnica
+      description: |
+        Pega el texto de la ficha, **o** arrastra el archivo .docx o .pdf a este campo
+        y deja el enlace que GitHub inserta. Entre más completa venga la ficha —con
+        temas, aprendizajes esperados y criterios de evaluación—, menos tiene que
+        deducir el generador.
+      placeholder: Pega aquí el contenido de la ficha técnica…
+    validations:
+      required: true
+
+  - type: input
+    id: nombre
+    attributes:
+      label: Nombre del curso
+      description: Déjalo vacío si viene en la ficha.
+      placeholder: Gestión de Proyectos y Metodologías Ágiles
+
+  - type: checkboxes
+    id: piezas
+    attributes:
+      label: Piezas a generar
+      description: El syllabus y los módulos se generan siempre.
+      options:
+        - label: Marco del curso (bienvenida, requisitos, facilitador, cierre, insignia)
+          required: false
+        - label: Evaluaciones (diagnóstica de 10 y 5 por módulo)
+          required: false
+        - label: Material para video (outline de 15 min por módulo)
+          required: false
+
+  - type: dropdown
+    id: presentaciones
+    attributes:
+      label: Presentaciones
+      description: Corresponden a los Prompts 7, 8 y 9 del playbook.
+      multiple: true
+      options:
+        - sitio
+        - virtual
+        - asincrona
+
+  - type: input
+    id: facilitador
+    attributes:
+      label: Facilitador
+      placeholder: Nombre y apellido
+
+  - type: textarea
+    id: facilitador_datos
+    attributes:
+      label: Datos del facilitador
+      description: |
+        Experiencia, empresas, especialidad, hobbies. Si lo dejas vacío, esos campos
+        salen como `[POR DEFINIR]`: no se inventan datos de personas reales.
+
+  - type: dropdown
+    id: profundidad
+    attributes:
+      label: Profundidad del modelo
+      options:
+        - equilibrada
+        - máxima
+        - rápida
+      default: 0
