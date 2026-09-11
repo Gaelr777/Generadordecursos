@@ -1,0 +1,110 @@
+name: Generar curso
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      ficha:
+        description: "Ruta de la ficha ya commiteada, p. ej. fichas/GA2AU.docx"
+        required: true
+      nombre:
+        description: "Nombre del curso (opcional)"
+        required: false
+      piezas:
+        description: "Piezas extra, separadas por coma: marco,evaluaciones,video"
+        required: false
+        default: "marco,evaluaciones"
+      presentaciones:
+        description: "Modalidades, separadas por coma: sitio,virtual,asincrona"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: generar-curso-${{ github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  generar:
+    # Solo issues con la etiqueta 'curso'. El dispatch manual siempre corre.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.issue.labels.*.name, 'curso')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -q -r requirements.txt
+
+      - name: Avisar que arrancó
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} \
+            --body "Generando. Toma entre 5 y 15 minutos según el número de módulos. [Ver avance](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+
+      - name: Generar el curso
+        id: generar
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODELO: ${{ vars.MODELO }}
+          CUERPO: ${{ github.event.issue.body }}
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            python cli.py --issue-body "$CUERPO" --salida cursos --resumen resumen.md
+          else
+            ARGS=""
+            case "${{ inputs.piezas }}" in *marco*) ARGS="$ARGS --marco";; esac
+            case "${{ inputs.piezas }}" in *evaluaciones*) ARGS="$ARGS --evaluaciones";; esac
+            case "${{ inputs.piezas }}" in *video*) ARGS="$ARGS --video";; esac
+            python cli.py --ficha "${{ inputs.ficha }}" --nombre "${{ inputs.nombre }}" \
+              --presentaciones "${{ inputs.presentaciones }}" \
+              --salida cursos --resumen resumen.md $ARGS
+          fi
+
+      - name: Guardar el curso en el repositorio
+        if: always() && hashFiles('cursos/**') != ''
+        run: |
+          git config user.name  "generador-de-cursos"
+          git config user.email "actions@users.noreply.github.com"
+          git add cursos
+          if git diff --staged --quiet; then
+            echo "Sin cambios que guardar."
+          else
+            git commit -m "Curso generado${{ github.event.issue.number && format(' · solicitud #{0}', github.event.issue.number) || '' }}"
+            git push
+          fi
+
+      - name: Publicar el resultado en la issue
+        if: always() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f resumen.md ]; then
+            gh issue comment ${{ github.event.issue.number }} --body-file resumen.md
+            gh issue close ${{ github.event.issue.number }} --reason completed
+          else
+            gh issue comment ${{ github.event.issue.number }} \
+              --body "La generación falló antes de producir nada. [Ver el registro](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) para el detalle."
+          fi
+
+      - name: Dejar el curso descargable desde Actions
+        if: always() && hashFiles('cursos/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: curso
+          path: cursos/**
+          retention-days: 30
